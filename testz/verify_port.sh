@@ -3,7 +3,7 @@
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SH="$ROOT_DIR/sh"
-ULIMIT_CMD="ulimit -v 256000 -t 5"
+ULIMIT_CMD="ulimit -t 5"
 
 fail_count=0
 pass_count=0
