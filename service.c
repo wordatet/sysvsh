@@ -70,16 +70,21 @@ initio(iop, save)
 			if (iof & IODOC)
 			{
 				struct tempblk tb;
+				unsigned char local_tmp[128];
 
-				subst(chkopen(ion), (fd = tmpfil(&tb)));
+				fd = tmpfil(&tb);
+				/* Save current tmpout before it gets clobbered by nested expansion */
+				movstr(tmpout, local_tmp);
+
+				subst(chkopen(ion), fd);
 
 				poptemp();	/* pushed in tmpfil() --
 						   bug fix for problem with
 						   in-line scripts
 						*/
 
-				fd = chkopen(tmpout);
-				unlink(tmpout);
+				fd = chkopen(local_tmp);
+				unlink(local_tmp);
 			}
 			else if (iof & IOMOV)
 			{
