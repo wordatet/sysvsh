@@ -2,6 +2,9 @@
 sh
 *.log
 *.out
+Makefile
+config.log
+conftest*
 .gemini/
 brain/
 implementation_plan.md
