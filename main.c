@@ -75,7 +75,7 @@ char	*e[];
 	mypgid = getpgid(mypid);
 	mysid = getsid(mypid);
 
-	sh_tmpnam_offset = length(tmpout);
+	sh_tmpnam_offset = length(tmpout) - 1;
 
 	/*
 	 * initialize storage allocation
