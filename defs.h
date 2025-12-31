@@ -19,6 +19,15 @@
 /*	All Rights Reserved.					*/
 
 #include    <stdio.h>
+#include    <sys/types.h>
+
+/* Portability shims for Bionic/Ancient Unix */
+#ifndef ushort
+typedef unsigned short ushort;
+#endif
+#ifndef uint
+typedef unsigned int uint;
+#endif
 
 
 #ident	"@(#)sh:defs.h	1.15.18.1"
