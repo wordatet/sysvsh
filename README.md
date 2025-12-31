@@ -1,0 +1,71 @@
+# sysvsh: Classic SVR4 Bourne Shell for Modern Unix
+
+`sysvsh` is a robust, 64-bit port of the legendary **System V Release 4 (SVR4) Bourne Shell** to modern Linux and Unix-like operating systems. It aims to provide a pure, authentic SVR4 experience while taking full advantage of modern hardware and kernel capabilities.
+
+This project is intended for **Research and Educational purposes**, preserving a vital piece of computing history through active maintenance and modernization.
+
+---
+
+## 🚀 Key Features & Modernizations
+
+- **64-bit Native Stability**: Completely audited for pointer truncation and 64-bit safety. No more legacy `sbrk` hacks or memory corruption.
+- **Bulletproof I/O path**: Deeply refactored heredoc, pipe, and loop synchronization logic ensures reliability on modern multi-core systems.
+- **Dynamic Signal Engine**: Replaced static 1990s-era signal arrays with a dynamic mapping system that respects the 64+ signals of modern kernels.
+- **"Vintage Mode" Support**: Compiles out-of-the-box with both `gcc` (modern) and the **Portable C Compiler (`pcc`)** for an authentic 90s build experience.
+- **Paranoid Mode Testing**: Subjected to an intense stress suite involving recursive subshells, deep pipe chains, and signal churn to ensure "bulletproof" operation.
+
+---
+
+## 🛠️ Building and Testing
+
+### Modern Build (GCC)
+To build with modern optimizations and safeguards:
+```bash
+make clean && make sh
+```
+
+### Vintage Mode (PCC)
+To build using the Portable C Compiler (recreating the classic development environment):
+```bash
+make vintage
+```
+
+### Verification
+Run the stability suite to verify the port on your architecture:
+```bash
+cd testz
+./verify_port.sh
+./paranoid_stress.sh
+```
+
+---
+
+## 📂 Repository Structure
+
+| File/Dir | Description |
+| :--- | :--- |
+| `main.c`, `args.c` | Shell initialization and argument parsing |
+| `macro.c`, `expand.c` | Variable substitution, expansion, and "MARK" bit logic |
+| `xec.c`, `service.c` | Command execution, forking, and pipe management |
+| `jobs.c` | Job control and process group management |
+| `fault.c` | Signal handling and the Dynamic Signal Engine |
+| `stak.c`, `blok.c` | Custom shell stack and memory allocation logic |
+| `io.c`, `word.c` | Input/Output routines and character processing |
+| `mac.h`, `defs.h` | Core shell definitions and portability shims |
+| `testz/` | "Paranoid Mode" stress tests and verification scripts |
+| `Makefile` | Multi-compiler build system (GCC/PCC) |
+
+---
+
+## 🏛️ Credits & Heritage
+
+- **Original Authors**: Developed by UNIX System Laboratories (USL) and AT&T.
+- **Modernization & Porting**: Mario (@wordatet) in collaboration with **Gemini** and **Claude** (AI systems).
+- **Inspiration**: Decades of Unix tinkering and a passion for historical code preservation.
+
+## ⚖️ Disclaimer
+
+*This project is for private research and educational use only. It is a derivative of historical source code and is not intended for commercial distribution. Users should respect the original licensing terms of the base SVR4 sources.*
+
+---
+*Built with ❤️ for the past, running on the ⚡ of the future.*
