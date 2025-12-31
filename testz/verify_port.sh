@@ -15,7 +15,8 @@ run_test() {
     
     echo -n "Test: $desc... "
     # Run with ulimit to prevent system hangs
-    output=$(bash -c "$ULIMIT_CMD && $SH -c \"$cmd\"" 2>&1)
+    # Use single quotes for SH -c to prevent premature expansion
+    output=$(bash -c "$ULIMIT_CMD && $SH -c '$cmd'" 2>&1)
     exit_code=$?
     
     if [ $exit_code -eq 0 ] && echo "$output" | grep -q "$expected"; then
