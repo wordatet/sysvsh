@@ -97,9 +97,10 @@ if ! $CC -o conftest conftest.c 2>/dev/null; then
 fi
 rm -f conftest conftest.c
 
-# Detect target OS (for cross-compile, try to infer from host triplet)
+# Detect target OS
 if [ -n "$HOST" ]; then
     case "$HOST" in
+        *-linux-android*) TARGET_OS="Android" ;;
         *-linux-*)    TARGET_OS="Linux" ;;
         *-freebsd*)   TARGET_OS="FreeBSD" ;;
         *-darwin*)    TARGET_OS="Darwin" ;;
@@ -108,7 +109,20 @@ if [ -n "$HOST" ]; then
         *)            TARGET_OS="Unknown" ;;
     esac
 else
-    TARGET_OS="$BUILD_OS"
+    # Check for Android natively
+    cat > conftest.c <<EOF
+#ifdef __ANDROID__
+int main(void) { return 0; }
+#else
+#error Not Android
+#endif
+EOF
+    if $CC -c conftest.c -o conftest.o 2>/dev/null; then
+        TARGET_OS="Android"
+    else
+        TARGET_OS="$BUILD_OS"
+    fi
+    rm -f conftest.c conftest.o
 fi
 msg "Target OS: $TARGET_OS"
 
@@ -122,6 +136,27 @@ BASE_CFLAGS="$BASE_CFLAGS -Wno-pointer-sign -Wno-unused-result"
 case "$TARGET_OS" in
     Linux)
         msg "Configuring for Linux..."
+        LIBS=""
+        ;;
+    Android)
+        msg "Configuring for Android/Termux..."
+        BASE_CFLAGS="$BASE_CFLAGS -D_GNU_SOURCE"
+        # Termux specific path adjustment
+        if [ -n "$TERMUX_VERSION" ]; then
+            msg "  Termux detected, setting prefixes..."
+            PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+            SH_DEFPATH="/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/bin/applets:/system/bin"
+            SH_SYSPROFILE="/data/data/com.termux/files/usr/etc/profile"
+            SH_TMPPREFIX="/data/data/com.termux/files/usr/tmp/sh-"
+        else
+            # Generic Android (local/tmp or side-loaded)
+            SH_DEFPATH="/system/bin:/system/xbin:/data/local/tmp"
+            SH_SYSPROFILE="/system/etc/profile"
+            SH_TMPPREFIX="/data/local/tmp/sh-"
+        fi
+        BASE_CFLAGS="$BASE_CFLAGS -DSH_DEFPATH='\"$SH_DEFPATH\"'"
+        BASE_CFLAGS="$BASE_CFLAGS -DSH_SYSPROFILE='\"$SH_SYSPROFILE\"'"
+        BASE_CFLAGS="$BASE_CFLAGS -DSH_TMPPREFIX='\"$SH_TMPPREFIX\"'"
         LIBS=""
         ;;
     FreeBSD|NetBSD|OpenBSD)

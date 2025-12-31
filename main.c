@@ -34,7 +34,10 @@
 pid_t mypid, mypgid, mysid;
 
 static BOOL	beenhere = FALSE;
-unsigned char		tmpout[20] = "/tmp/sh-";
+#ifndef SH_TMPPREFIX
+#define SH_TMPPREFIX "/tmp/sh-"
+#endif
+unsigned char		tmpout[128] = SH_TMPPREFIX;
 struct fileblk	stdfile;
 struct fileblk *standin = &stdfile;
 int mailchk = 0;

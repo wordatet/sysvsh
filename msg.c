@@ -123,7 +123,10 @@ const char	mailpname[]	= "MAILPATH";
  */
 const char	nullstr[]	= "";
 const char	sptbnl[]	= " \t\n";
-const char	defpath[]	= "/usr/bin:";
+#ifndef SH_DEFPATH
+#define SH_DEFPATH "/usr/bin:"
+#endif
+const char	defpath[]	= SH_DEFPATH;
 const char	colon[]		= ": ";
 const char	minus[]		= "-";
 const char	endoffile[]	= "end of file";
@@ -135,7 +138,10 @@ const char	readmsg[]	= "> ";
 const char	stdprompt[]	= "$ ";
 const char	supprompt[]	= "# ";
 const char	profile[]	= ".profile";
-const char	sysprofile[]	= "/etc/profile";
+#ifndef SH_SYSPROFILE
+#define SH_SYSPROFILE "/etc/profile"
+#endif
+const char	sysprofile[]	= SH_SYSPROFILE;
 
 #ifdef VPIX
 const unsigned char	*vpixdirname;
