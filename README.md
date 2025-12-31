@@ -18,15 +18,26 @@ This project is intended for **Research and Educational purposes**, preserving a
 
 ## 🛠️ Building and Testing
 
-### Modern Build (GCC)
-To build with modern optimizations and safeguards:
+### Quick Start (Modern GCC)
+To build with modern optimizations:
 ```bash
-make clean && make sh
+./configure
+make
+```
+
+### Advanced Options
+The `configure` script supports standard cross-compilation and installation options:
+```bash
+./configure --prefix=/usr/local --host=aarch64-linux-gnu
+make && make install
 ```
 
 ### Vintage Mode (PCC)
 To build using the Portable C Compiler (recreating the classic development environment):
 ```bash
+./configure --cc=pcc
+make
+# OR use the vintage target directly
 make vintage
 ```
 
@@ -44,6 +55,7 @@ cd testz
 
 | File/Dir | Description |
 | :--- | :--- |
+| `configure` | Portable POSIX sh script for building on various platforms |
 | `main.c`, `args.c` | Shell initialization and argument parsing |
 | `macro.c`, `expand.c` | Variable substitution, expansion, and "MARK" bit logic |
 | `xec.c`, `service.c` | Command execution, forking, and pipe management |
@@ -53,7 +65,7 @@ cd testz
 | `io.c`, `word.c` | Input/Output routines and character processing |
 | `mac.h`, `defs.h` | Core shell definitions and portability shims |
 | `testz/` | "Paranoid Mode" stress tests and verification scripts |
-| `Makefile` | Multi-compiler build system (GCC/PCC) |
+| `Makefile` | **(Generated)** Build system for GCC/PCC |
 
 ---
 
