@@ -28,6 +28,9 @@ typedef unsigned short ushort;
 #ifndef uint
 typedef unsigned int uint;
 #endif
+#ifndef ulong
+typedef unsigned long ulong;
+#endif
 
 
 #ident	"@(#)sh:defs.h	1.15.18.1"
