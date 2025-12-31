@@ -32,6 +32,11 @@ The `configure` script supports standard cross-compilation and installation opti
 make && make install
 ```
 
+### Android/Termux Notice
+Native compilation is fully supported in Termux.
+- **Prerequisite**: `pkg install gcc-13` (Required for K&R C compatibility).
+- **Build**: `./configure && make`
+
 ### Vintage Mode (PCC)
 To build using the Portable C Compiler (recreating the classic development environment):
 ```bash

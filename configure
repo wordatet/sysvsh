@@ -6,7 +6,7 @@ set -e
 
 # Defaults
 PREFIX=/usr/local
-CC="${CC:-cc}"
+CC="${CC:-}"
 CFLAGS="${CFLAGS:-}"
 LDFLAGS="${LDFLAGS:-}"
 LIBS=""
@@ -86,6 +86,17 @@ BUILD_OS=$(uname -s)
 BUILD_ARCH=$(uname -m)
 msg "Build system: $BUILD_OS $BUILD_ARCH"
 
+# Native Android detection for compiler selection
+if [ -z "$CC" ]; then
+    if [ "$BUILD_OS" = "Android" ] || [ -d /system ]; then
+        if command -v gcc-13 >/dev/null 2>&1; then
+            CC="gcc-13"
+            msg "Android detected: prioritizing gcc-13"
+        fi
+    fi
+fi
+CC="${CC:-cc}"
+
 # Test compiler
 msg "Checking for C compiler... $CC"
 cat > conftest.c <<EOF
@@ -142,7 +153,7 @@ case "$TARGET_OS" in
         msg "Configuring for Android/Termux..."
         BASE_CFLAGS="$BASE_CFLAGS -D_GNU_SOURCE"
         # Termux specific path adjustment
-        if [ -n "$TERMUX_VERSION" ]; then
+        if [ -n "$TERMUX_VERSION" ] || [ -d /data/data/com.termux ]; then
             msg "  Termux detected, setting prefixes..."
             PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
             SH_DEFPATH="/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/bin/applets:/system/bin"
@@ -238,7 +249,7 @@ sh: \$(OBJECTS)
 	\$(CC) \$(CFLAGS) -o sh \$(OBJECTS) \$(LDFLAGS) \$(LIBS)
 
 .c.o:
-	\$(CC) \$(CFLAGS) -c \$<
+	\$(CC) \$(CFLAGS) -c $<
 
 install: sh
 	mkdir -p \$(DESTDIR)\$(PREFIX)/bin
