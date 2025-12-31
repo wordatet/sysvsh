@@ -3,12 +3,9 @@
 
 CC = gcc
 PCC = pcc
-CFLAGS_BASE = -I. -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -std=gnu89 -Wno-implicit-int -Wno-implicit-function-declaration -Wno-return-type -Wno-incompatible-pointer-types -Wno-pointer-sign
-CFLAGS_O0 = $(CFLAGS_BASE) -g -O0 -Wall -Wno-parentheses -Wno-unused-variable -Wno-unused-label
-CFLAGS_O2 = $(CFLAGS_BASE) -O2
-
-# Default to O0 for development
-CFLAGS = $(CFLAGS_O0)
+CFLAGS = -I. -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -std=gnu89 -O2 \
+	-Wno-implicit-int -Wno-implicit-function-declaration -Wno-return-type \
+	-Wno-incompatible-pointer-types -Wno-pointer-sign -Wno-unused-result
 
 LDFLAGS = 
 LIBS = 
@@ -30,10 +27,6 @@ sh: $(OBJECTS)
 vintage: CC = $(PCC)
 vintage: CFLAGS = -I. -D_GNU_SOURCE -O
 vintage: clean $(MAINS)
-
-# Optimized build target
-opt: CFLAGS = $(CFLAGS_O2)
-opt: clean $(MAINS)
 
 # Stability Suite
 test: all
