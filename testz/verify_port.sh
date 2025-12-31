@@ -1,7 +1,8 @@
 #!/bin/bash
 # verify_port.sh - Automated verification for the 64-bit SVR4 shell port
 
-SH="../sh"
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+SH="$ROOT_DIR/sh"
 ULIMIT_CMD="ulimit -v 256000 -t 5"
 
 fail_count=0
@@ -14,7 +15,7 @@ run_test() {
     
     echo -n "Test: $desc... "
     # Run with ulimit to prevent system hangs
-    output=$(bash -c "$ULIMIT_CMD && $SH -c '$cmd'" 2>&1)
+    output=$(bash -c "$ULIMIT_CMD && $SH -c \"$cmd\"" 2>&1)
     exit_code=$?
     
     if [ $exit_code -eq 0 ] && echo "$output" | grep -q "$expected"; then
@@ -29,7 +30,7 @@ run_test() {
 }
 
 echo "Starting automated verification..."
-(cd "$(dirname "$0")/.." && ./configure && make) || exit 1
+(cd "$ROOT_DIR" && ./configure && make) || exit 1
 
 run_test "Simple echo" "echo hello" "hello"
 run_test "Pipe support" "echo hello | /usr/bin/wc -c" "6"
