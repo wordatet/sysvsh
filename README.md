@@ -74,13 +74,13 @@ cd testz
 
 ---
 
-## 🏛️ Credits & Heritage
+## ⚖️ License
 
-- **Original Authors**: Developed by UNIX System Laboratories (USL) and AT&T.
-- **Modernization & Porting**: Mario (@wordatet) in collaboration with **Gemini** and **Claude** (AI systems).
-- **Inspiration**: Decades of Unix tinkering and a passion for historical code preservation.
+The modifications, shims, and modernization layer of this port are provided under the **BSD 3-Clause License**. See the [LICENSE](LICENSE) file for the full text.
 
-## ⚖️ Disclaimer
+## 🏛️ Heritage & Disclaimer
+
+*This project is for private research and educational use only.*
 
 *This project is for private research and educational use only. It is a derivative of historical source code and is not intended for commercial distribution. Users should respect the original licensing terms of the base SVR4 sources.*
 
