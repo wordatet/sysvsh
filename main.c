@@ -31,13 +31,14 @@
 #include	<sgtty.h>
 #endif
 
-pid_t mypid, mypgid, mysid;
-
-static BOOL	beenhere = FALSE;
 #ifndef SH_TMPPREFIX
 #define SH_TMPPREFIX "/tmp/sh-"
 #endif
+
+pid_t mypid, mypgid, mysid;
+static BOOL	beenhere = FALSE;
 unsigned char		tmpout[128] = SH_TMPPREFIX;
+int sh_tmpnam_offset = 0;
 struct fileblk	stdfile;
 struct fileblk *standin = &stdfile;
 int mailchk = 0;
@@ -73,6 +74,8 @@ char	*e[];
 	mypid = getpid();
 	mypgid = getpgid(mypid);
 	mysid = getsid(mypid);
+
+	sh_tmpnam_offset = length(tmpout);
 
 	/*
 	 * initialize storage allocation

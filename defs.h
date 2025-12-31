@@ -351,7 +351,8 @@ extern unsigned char				tmpout[];
 extern unsigned char				*sh_tmpnam;
 extern int				serial;
 
-#define		TMPNAM 		7
+#define		TMPNAM 		sh_tmpnam_offset
+extern int sh_tmpnam_offset;
 
 extern struct fileblk	*standin;
 
