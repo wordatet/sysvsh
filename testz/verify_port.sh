@@ -29,7 +29,7 @@ run_test() {
 }
 
 echo "Starting automated verification..."
-(cd .. && make sh) || exit 1
+(cd .. && ./configure && make) || exit 1
 
 run_test "Simple echo" "echo hello" "hello"
 run_test "Pipe support" "echo hello | /usr/bin/wc -c" "6"

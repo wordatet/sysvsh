@@ -239,30 +239,30 @@ LDFLAGS = $LDFLAGS
 LIBS = $LIBS
 PREFIX = $PREFIX
 
-MAINS = sh
+TARGET = sh
 OBJECTS = args.o blok.o cmd.o ctype.o defs.o echo.o error.o expand.o \\
 	fault.o func.o hash.o hashserv.o io.o macro.o main.o msg.o \\
 	name.o print.o pwd.o service.o setbrk.o stak.o string.o test.o \\
 	word.o xec.o bltin.o jobs.o ulimit.o compat.o
 
-all: \$(MAINS)
+all: \$(TARGET)
 
-sh: \$(OBJECTS)
-${TAB}\$(CC) \$(CFLAGS) -o sh \$(OBJECTS) \$(LDFLAGS) \$(LIBS)
+\$(TARGET): \$(OBJECTS)
+${TAB}\$(CC) \$(CFLAGS) -o \$(TARGET) \$(OBJECTS) \$(LDFLAGS) \$(LIBS)
 
 .c.o:
 ${TAB}\$(CC) \$(CFLAGS) -c $<
 
-install: sh
+install: \$(TARGET)
 ${TAB}mkdir -p \$(DESTDIR)\$(PREFIX)/bin
-${TAB}cp sh \$(DESTDIR)\$(PREFIX)/bin/sysvsh
+${TAB}cp \$(TARGET) \$(DESTDIR)\$(PREFIX)/bin/sysvsh
 ${TAB}chmod 755 \$(DESTDIR)\$(PREFIX)/bin/sysvsh
 
 uninstall:
 ${TAB}rm -f \$(DESTDIR)\$(PREFIX)/bin/sysvsh
 
 clean:
-${TAB}rm -f \$(OBJECTS) \$(MAINS)
+${TAB}rm -f \$(OBJECTS) \$(TARGET)
 
 distclean: clean
 ${TAB}rm -f Makefile config.log
