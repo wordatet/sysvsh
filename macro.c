@@ -159,7 +159,7 @@ retry:
 					c = '1';
 				}
 				c -= '0';
-				v = ((c == 0) ? cmdadr : ((int)c <= dolc) ? dolv[c] : (unsigned char *)(dolg = 0));
+				v = ((c == 0) ? cmdadr : ((int)c <= dolc) ? dolv[c] : (dolg = 0, (unsigned char *)0));
 			}
 			else if (c == '$')
 				v = pidadr;

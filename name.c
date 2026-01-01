@@ -326,7 +326,7 @@ unsigned char	**names;
 	unsigned char	c[MULTI_BYTE_MAX+1];
 	register int	rc = 0;
 	struct namnod *n = lookup(*names++);	/* done now to avoid storage mess */
-	long	rel = relstak();
+	intptr_t	rel = relstak();
 	unsigned char *oldstak;
 	register unsigned char *pc, *rest;
 	int d;

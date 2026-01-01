@@ -21,7 +21,7 @@
  * c) then reset with `setstak'
  * d) `absstak' gives real address if needed
  */
-#define		relstak()	((long)(staktop-stakbot))
+#define		relstak()	((intptr_t)(staktop-stakbot))
 #define		absstak(x)	(stakbot+Rcheat(x))
 #define		setstak(x)	(staktop=absstak(x))
 extern void pushstak();

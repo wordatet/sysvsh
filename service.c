@@ -659,7 +659,7 @@ unsigned char	*s;
 			makearg(argp);
 			count++;
 		}
-		gchain = (struct argnod *)((long)gchain | ARGMK);
+		gchain = (struct argnod *)((intptr_t)gchain | ARGMK);
 	}
 }
 

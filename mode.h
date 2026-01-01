@@ -23,12 +23,14 @@ typedef short BOOL;
 #define	NIL	((char*)0)
 
 
+#include <stdint.h>
+
 /* the following nonsense is required
  * because casts turn an Lvalue
  * into an Rvalue so two cheats
  * are necessary, one for each context.
  */
-#define Rcheat(a)	((long)(a))
+#define Rcheat(a)	((intptr_t)(a))
 
 
 /* address puns for storage allocation */
