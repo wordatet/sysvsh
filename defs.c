@@ -68,8 +68,10 @@ int				rwait;	/* flags read waiting */
 jmp_buf			subshell;
 jmp_buf			errshell;
 
+#include <signal.h>
+
 /* fault handling */
-BOOL			trapnote;
+volatile sig_atomic_t trapnote;
 
 /* execflgs */
 int				exitval;

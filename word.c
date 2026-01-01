@@ -264,6 +264,8 @@ readb()
 
 	do
 	{
+        if (exit_pending)
+            done(exit_pending);
 		if (trapnote & SIGSET)
 		{
 			newline();
@@ -280,7 +282,8 @@ readb()
 }
 
 
-int readc_raw()
+int
+readc_raw()
 {
 	register int c;
 	if (peekn)

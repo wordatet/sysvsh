@@ -16,6 +16,8 @@
 
 static void fault();
 static BOOL sleeping = 0;
+volatile sig_atomic_t exit_pending = 0;
+static int inside_done = 0;
 static unsigned char *trapcom[MAXTRAP];
 static BOOL trapflg[MAXTRAP];
 static void (*sigval[MAXTRAP])();
@@ -91,6 +93,12 @@ void
 done(sig)
 {
 	register unsigned char	*t;
+
+    if (sig && !inside_done && sig != SIGSEGV && sig != SIGBUS && sig != SIGILL && sig != SIGFPE) {
+        exit_pending = sig;
+        return;
+    }
+    inside_done = 1;
 
 	if (t = trapcom[0])
 	{
