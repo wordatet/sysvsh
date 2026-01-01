@@ -154,19 +154,20 @@ tmpfil(tb)
 extern BOOL		nosubst;
 #define			CPYSIZ		512
 
+#define HEREDOC_BUFLEN 1024
+
+void
 copy(ioparg)
 struct ionod	*ioparg;
 {
-	register unsigned char	*cline;
-	register unsigned char	*clinep;
 	register struct ionod	*iop;
 	int	c;
 	unsigned char	*ends;
-	unsigned char	*start;
 	int		fd;
 	int		i;
 	int		stripflg;
-	
+	unsigned char line[HEREDOC_BUFLEN];
+	unsigned char *clinep;
 
 	if (iop = ioparg)
 	{
@@ -187,13 +188,14 @@ struct ionod	*ioparg;
 		iop->iolst = iotemp;
 		iotemp = iop;
 
-		cline = clinep = start = locstak();
 		if (stripflg)
 		{
 			iop->iofile &= ~IOSTRIP;
 			while (*ends == '\t')
 				ends++;
 		}
+		
+		clinep = line;
 		for (;;)
 		{
 			chkpr();
@@ -206,7 +208,8 @@ struct ionod	*ioparg;
 
 				while (!eolchar(c))
 				{
-					*clinep++ = c;
+					if (clinep < line + HEREDOC_BUFLEN - 1)
+						*clinep++ = c;
 					c = readc();
 				}
 			}
@@ -219,29 +222,35 @@ struct ionod	*ioparg;
 				
 				while (!eolchar(c))
 				{
-					*clinep++ = c;
-					if(c == '\\')
-						*clinep++ = readc();
+					if (clinep < line + HEREDOC_BUFLEN - 1)
+						*clinep++ = c;
+					if(c == '\\') {
+						c = readc();
+						if (clinep < line + HEREDOC_BUFLEN - 1)
+							*clinep++ = c;
+					}
 					c = nextc();
 				}
 			}
 
 			*clinep = 0;
-			if (eof || eq(cline, ends))
+			if (eof || eq(line, ends))
 			{
-				if ((i = cline - start) > 0)
-					write(fd, start, i);
+				if ((i = clinep - line) > 0)
+					write(fd, line, i);
 				break;
 			}
 			else
-				*clinep++ = NL;
-
-			if ((i = clinep - start) < CPYSIZ)
-				cline = clinep;
-			else
 			{
-				write(fd, start, i);
-				cline = clinep = start;
+				if (clinep < line + HEREDOC_BUFLEN - 1)
+					*clinep++ = NL;
+			}
+
+			/* If buffer full, flush it */
+			if ((i = clinep - line) >= HEREDOC_BUFLEN - MULTI_BYTE_MAX - 2)
+			{
+				write(fd, line, i);
+				clinep = line;
 			}
 		}
 
