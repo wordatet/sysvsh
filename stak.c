@@ -15,35 +15,42 @@
  */
 
 #include	"defs.h"
-#include    <stdlib.h>
-#include    <stdio.h>
-#include    <sys/mman.h>
+#include <sys/mman.h>
 
-/* ========	storage allocation	======== */
+#ifndef MAP_ANONYMOUS
+#define MAP_ANONYMOUS MAP_ANON
+#endif
 
-#define STAK_MAX_SIZE (128 * 1024 * 1024) /* 128MB fixed stack */
+#define STAK_MAX_SIZE (256 * 1024 * 1024) /* 256MB Virtual Limit */
+
 static unsigned char *stak_buffer = NULL;
 static size_t stak_size = 0;
 
-static void
+void
 stak_ensure(needed)
 size_t needed;
 {
     if (stak_buffer == NULL) {
-        /* Initial allocation: use mmap to get a large fixed region */
+        /* Reserve a large virtual region but let the OS handle actual paging */
         stak_buffer = (unsigned char *)mmap(NULL, STAK_MAX_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if (stak_buffer == MAP_FAILED) {
+            perror("sh: mmap stack");
             exit(1);
         }
-        stak_size = STAK_MAX_SIZE;
         stakbas = stakbot = staktop = stak_buffer;
-        brkend = stak_buffer + stak_size;
+        brkend = stak_buffer + STAK_MAX_SIZE;
+        stak_size = STAK_MAX_SIZE;
     }
 
-    size_t current_offset = staktop - stak_buffer;
-    if (current_offset + needed > stak_size) {
+    if (staktop + needed > brkend) {
         error(nostack);
     }
+}
+
+void
+stak_init()
+{
+    stak_ensure(0);
 }
 
 void pushstak(c)
@@ -110,7 +117,7 @@ register unsigned char	*x;
 		stakbsy = stakbsy->word;
 		sh_free(t);
 	}
-	staktop = stakbot = (unsigned char *)max((long)x, (long)stakbas);
+	staktop = stakbot = (unsigned char *)max((intptr_t)x, (intptr_t)stakbas);
 	rmtemp(x);
 }
 

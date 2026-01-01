@@ -81,7 +81,7 @@ char	*e[];
 	 * initialize storage allocation
 	 */
 
-	stakbot = 0;
+	stak_init();
 	/* addblok((unsigned)0); */
 
 	stdsigs();
@@ -316,6 +316,8 @@ BOOL	prof;
 	 */
 	for (;;)
 	{
+        if (exit_pending)
+            done(exit_pending);
 		tdystak(0);
 		stakchk();	/* may reduce sbrk */
 		exitset();

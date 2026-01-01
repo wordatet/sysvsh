@@ -20,6 +20,7 @@
 
 #include    <stdio.h>
 #include    <sys/types.h>
+#include    <stdint.h>
 
 /* Portability shims for Bionic/Ancient Unix */
 #ifndef ushort
@@ -226,7 +227,8 @@ extern unsigned char *locstak();
 extern unsigned char *endstak();
 extern unsigned char *cpystak();
 extern unsigned char *savstak();
-extern long relstak();
+extern void stak_init();
+extern void stak_ensure();
 extern unsigned char *absstak();
 
 
@@ -238,7 +240,7 @@ extern unsigned char *absstak();
 #define 	alloc 		sh_alloc
 #define 	free 		sh_free
 #define 	attrib(n,f)		(n->namflg |= f)
-#define 	round(a,b)		(((long)(a)+(long)(b)-1)&~((long)(b)-1))
+#define 	round(a,b)		(((intptr_t)(a)+(intptr_t)(b)-1)&~((intptr_t)(b)-1))
 #define 	closepipe(x)	(close(x[INPIPE]), close(x[OTPIPE]))
 #define 	eq(a,b)			(cf(a,b)==0)
 #define 	max(a,b)		((a)>(b)?(a):(b))
@@ -410,7 +412,8 @@ extern unsigned			brkincr;
 #define		SIGMOD		8
 #define		SIGIGN		16
 
-extern BOOL				trapnote;
+extern volatile sig_atomic_t trapnote;
+extern volatile sig_atomic_t exit_pending;
 
 /* name tree and words */
 extern char				**environ;
